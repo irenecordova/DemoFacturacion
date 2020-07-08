@@ -1,0 +1,56 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+
+{% block script %}
+<script defer type="text/javascript" src="{% static 'js/factura_form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+{% if accion == 'Ver' %}
+    <h4>factura</h4>
+{% else %}
+    <h4>{{accion}} factura</h4>
+{% endif %}
+<div class="col-12">
+    <form autocomplete="off" method="POST" class="post-form" id="formCobro">
+        {% csrf_token %}
+        <div class="row">
+            <div class="form-group col-sm-12 col-md-6 col-lg-12 required">
+                <button class="save btn btn-primary btn-sm" type="submit" title="Guardar" style="float: right;">Guardar</button>
+            </div> 
+      </div>
+      <div class="row">
+          <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+              <div class="row">
+                  <label class="col-sm-4 col-form-label">Fecha de cobro</label>
+                  <div class="col-sm-8">
+                      <input name = "fecha_cobro" id="fecha_cobro" type="date" class="form-control" required>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+            <div class="row">
+                <label class="col-sm-4 col-form-label">Tpo de cobro</label>
+                <div class="col-sm-8">
+                    <select name="tipo_cobro" class="form-control" id="tipo_cobro">
+                        <option value="CH">Cheque</option>
+                        <option value="EF">Efectivo</option>
+                        <option value="TC">TC</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+            <div class="row">
+                <label class="col-sm-4 col-form-label" for="monto">Monto</label>
+                <div class="col-sm-8">
+                    <input type="text" name="monto" id="monto" class="form-control" min="0.00" value="0" step=".01">
+                </div>
+            </div>
+        </div>
+      </div>           
+    </form>
+</div>
+
+{% endblock %}

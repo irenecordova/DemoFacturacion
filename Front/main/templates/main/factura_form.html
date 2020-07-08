@@ -1,0 +1,271 @@
+{% extends 'main/index.html' %}
+{% load static %}
+
+
+{% block script %}
+<script defer type="text/javascript" src="{% static 'js/factura_form.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+{% if accion == 'Ver' %}
+    <h4>Documento de venta</h4>
+{% else %}
+    <h4>{{accion}} documento de venta</h4>
+{% endif %}
+<div class="col-12">
+    <form autocomplete="off" method="POST" class="post-form" id="formDocumentoVenta">
+        {% csrf_token %}
+
+        
+
+        <div class="row">
+            <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+                <div class="row">
+                    <label class="col-sm-4 col-form-label" for="secuencial">Documento No.</label>
+                    <div class="col-sm-8">
+                        <input type="text" name="secuencial" class="form-control" id="secuencial" required>
+                    </div>
+                </div>
+            </div> 
+            <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+                
+            </div>
+            <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+                <button class="save btn btn-primary btn-sm" type="submit" title="Guardar" style="float: right;">Guardar</button>
+            </div> 
+      </div>
+      <div class="row">
+          <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+              <div class="row">
+                  <label class="col-sm-4 col-form-label">Fecha de emisi&oacute;n</label>
+                  <div class="col-sm-8">
+                      <input name = "fecha_emision" id="fecha_emision" type="date" class="form-control" value="{{factura.fecha_emision}}" required>
+                  </div>
+              </div>
+          </div>
+          <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+            <div class="row">
+                <label class="col-sm-4 col-form-label">Cliente</label>
+                <div class="col-sm-8">
+                    <input id= "cliente" name="cliente" type="text" class="form-control" value="{{factura.cliente}}">
+                </div>
+            </div>
+        </div>
+        <div class="form-group col-sm-12 col-md-6 col-lg-4 required">
+            <div class="row">
+                <label class="col-sm-4 col-form-label" for="vendedor">Vendedor</label>
+                <div class="col-sm-8">
+                    <input id= "vendedor" name="vendedor" type="text" class="form-control" value="{{factura.vendedor}}">
+                </div>
+            </div>
+        </div>
+      </div>
+    
+      <br>
+        
+      <div class="col-md-12 table-responsive">
+        <table class="table table-bordered table-sortable" id="tblItemsDocumento" {% if accion == 'Ver' %} hidden {% endif %}>
+            <thead>
+                <tr >
+                    {% if accion != 'Ver'%}
+                    <th class="text-center" style="visibility: hidden; border-bottom: 1px solid #ffffff; padding: 0px">
+                    </th>
+                    {% endif %}
+                    <th class="text-center" style="min-width: 200px;">
+                        &Iacute;tem
+                    </th>
+                    <th class="text-center" style="min-width: 100px;">
+                        Cantidad
+                        
+                    </th>
+                    <th class="text-center" style="min-width: 110px;">
+                        Precio unitario
+                    </th>
+                    <th class="text-center" style="min-width: 90px;">
+                        Desc. %
+                        
+                    </th>
+                    <th class="text-center" style="min-width: 90px;">
+                        Desc. $
+                    </th>
+                    {% if accion != 'Ver' %}
+                    <th class="text-center" style='display: none;'>
+                        ICE
+                    </th>
+                    <th class="text-center" style='display: none;'>
+                        IVA
+                    </th>
+                    {% endif %}
+                    <th class="text-center" style="min-width: 120px;">
+                        Subtotal sin imp.
+                    </th>
+                    {% if accion != 'Ver' %}
+                    <th class="text-center" style="visibility: hidden;  border-bottom: 1px solid #ffffff; padding: 0px">
+                    </th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% if accion == 'Registrar' %}
+                <tr class="clonedInput" id="filaitem_1">
+                    <td class="text-center" data-name="del">
+                        <a class="btn btn-sm" id="1" name="btnDel" title="Eliminar fila">-</a>
+                    </td>
+                    <td class="text-center" data-name="item">
+                        <input type="number" class="form-control" readonly id="item_id_1" style='display: none;'>
+                        <div class="input-group mb-3 has-feedback">
+                            <input type="text" name="item" class="form-control" id="item_1">
+                            <div class="input-group-append">
+                                <button id="1" name="btnBuscarItem" class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#modalItem"><i class="" aria-hidden="true"></i></button>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center" data-name="cantidad">
+                        <input type="number" name="cantidad" id="cantidad_1" class="form-control" min=1 step=".01">
+                    </td>
+                    <td class="text-center" data-name="precio_unitario">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+                            <input type="number" class="form-control" name="precio_unitario" id="precio_unitario_1" min="0">
+                        </div>
+                    </td>
+                    <td class="text-center" data-name="descuento_porcentaje">
+                        <div class="input-group mb-3">
+                            <input type="text" name="descuento_porcentaje" id="descuento_porcentaje_1" class="form-control" min="0.00" max="100.00" value="0" step=".01">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-center" data-name="descuento_dolares">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+                            <input type="text" name="descuento_dolares" id="descuento_dolares_1" class="form-control" min="0" value="0">
+                        </div>
+                    </td>
+                    <td class="text-center" data-name="ice_porcentaje" style='display: none;'>
+                        <input type="number" name="ice_porcentaje" class="form-control" readonly id="ice_porcentaje_1" value="0">
+                    </td>
+                    <td class="text-center" data-name="iva_porcentaje" style='display: none;'>
+                        <input type="number" name="iva" class="form-control" id="iva_id_1">
+                        <input type="number" name="iva_porcentaje" class="form-control" readonly id="iva_porcentaje_1" value="0">
+                    </td>
+                    <td class="text-center" data-name="subtotal">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
+                            <input type="number" name="subtotal" class="form-control" readonly id="subtotal_1" required step="0.01">
+                        </div>
+                    </td>
+                    <td class="text-center" data-name="add">
+                        <a class="btn btn-sm" id="btnAddInput" title="Agregar fila">+</a>
+                    </td>
+                </tr>
+                {% else %}
+                {% for item in documento.items %}
+                    <tr class="clonedInput" id="filaitem_{{forloop.counter}}">
+                        <td data-name="item">
+                            {{item.item}}
+                        </td>
+                        
+                        <td data-name="cantidad">
+                            {{item.cantidad}}
+                        </td>
+                        <td data-name="precio_unitario">
+                            $ {{item.precio_unitario}}
+                        </td>
+                        <td data-name="descuento_porcentaje">
+                            {{item.descuento_porcentaje}} %
+                        </td>
+                        <td data-name="descuento_dolares">
+                            $ {{item.descuento_dolares}}
+                        </td>
+                        <td data-name="subtotal">
+                            $ {{item.subtotal}}
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+       
+      <div class="main card">
+          <div class="card-body">
+              <div class="row justify-content-between">
+                  <div class="form-group col-5 required">
+                      <div class="row">
+                          <label class="col-sm-4 col-form-label">Descripci&oacute;n</label>
+                          <div class="col-sm-8">
+                              <textarea name="descripcion_documento" cols="40" rows="5" class="form-control" maxlength="200" id="id_descripcion" {% if accion == 'Ver' %}readonly{% else %}required{% endif %}>{{ documento.descripcion }}</textarea>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="form-group col-3">
+                      <div class="row pt-2">
+                          <label class="col-sm-5 col-form-label">Subtotal 12%</label>
+                          <div class="input-group mb-3 col-sm-7">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" name="subtotaldoce" class="form-control" id="subtotaldoce" style="text-align: right;" disabled value= "{{factura.subtotal_iva}}">
+                          </div>
+                      </div>
+                      <div class="row pt-2">
+                          <label class="col-sm-5 col-form-label">Subtotal 0%</label>
+                          <div class="input-group mb-3 col-sm-7">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                              </div>
+                                <input type="number" name="subtotalcero" class="form-control" id="subtotalcero" style="text-align: right;" disabled value= "{{factura.subtotal_no_iva}}">
+                          </div>
+                      </div>
+                      <div class="row pt-2">
+                          <label class="col-sm-5 col-form-label">Descuento</label>
+                          <div class="input-group mb-3 col-sm-7">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" name="descuento" class="form-control" id="descuento" style="text-align: right;" disabled value= "{{factura.descuento}}">
+                          </div>
+                      </div>
+                      <div class="row pt-2">
+                          <label class="col-sm-5 col-form-label">ICE</label>
+                          <div class="input-group mb-3 col-sm-7">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" name="ice" class="form-control" id="ice" style="text-align: right;" disabled value= "{{factura.ice}}">
+                          </div>
+                      </div>
+                      <div class="row pt-2">
+                          <label class="col-sm-5 col-form-label">IVA</label>
+                          <div class="input-group mb-3 col-sm-7">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" name="iva" class="form-control" id="iva" style="text-align: right;" disabled value= "{{factura.iva}}">
+                          </div>
+                      </div>                        
+                      <div class="row pt-2">
+                          <label class="col-sm-5 col-form-label">Total</label>
+                          <div class="input-group mb-3 col-sm-7">
+                              <div class="input-group-prepend">
+                                  <span class="input-group-text">$</span>
+                              </div>
+                                <input type="number" name="total" class="form-control" style="text-align: right;" id="total" readonly value= "{{factura.total}}">
+                          </div>
+                      </div>
+                  </div>  
+              </div>
+          </div>
+      </div>                  
+    </form>
+</div>
+
+{% endblock %}
