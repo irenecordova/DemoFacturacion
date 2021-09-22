@@ -1,4 +1,4 @@
 # Django
-django==3.0.7
+django==3.1.13
 djangorestframework==3.11.0
 requests
